@@ -14,8 +14,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,10 +51,11 @@ import hcmute.edu.vn.foodmachinelearning.ml.LiteModelAiyVisionClassifierFoodV11;
 public class MainActivity extends AppCompatActivity {
 
     Button selectBtn, predictBtn, captureBtn;
-    TextView result;
+//    TextView result;
+
+    ListView listViewName;
     ImageView imageView;
     Bitmap bitmap;
-
     Interpreter interpreter;
     List<String>  labels;
     List<String> classes = new ArrayList<>();
@@ -63,13 +66,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.test);
 
-        selectBtn = findViewById(R.id.selectBtn);
-        predictBtn = findViewById(R.id.predictBtn);
-        captureBtn = findViewById(R.id.captureBtn);
-        result = findViewById(R.id.result);
-        imageView = findViewById(R.id.imageView);
+        selectBtn = findViewById(R.id.button_gallery);
+        predictBtn = findViewById(R.id.button_identify);
+        captureBtn = findViewById(R.id.button_capture);
+        listViewName = findViewById(R.id.list_view_name);
+        imageView = findViewById(R.id.image_view);
 
         getPermission();
 
@@ -94,8 +97,6 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 byteBufferModel=loadModelToByteBuffer(modelFile);
                                 labels= loadLabelsFromMetadata(byteBufferModel,"probability-labels-en.txt");
-
-
                                 String labelmapUrl ="https://www.gstatic.com/aihub/tfhub/labelmaps/aiy_food_V1_labelmap.csv"; // URL của file CSV chứa danh sách tên lớp
                                 new AsyncTask<Void, Void, List<String>>() {
                                     @Override
@@ -127,9 +128,6 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
                                 }.execute();
-
-
-
 
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -230,27 +228,33 @@ public class MainActivity extends AppCompatActivity {
                     LiteModelAiyVisionClassifierFoodV11.Outputs outputs = model.process(image);
                     probability = outputs.getProbabilityAsCategoryList();
 
-                    float maxProbability = 0f;
-                    int maxProbabilityIndex = -1;
-                    Category maxProbabilityLabel = probability.get(0);
+//                    float maxProbability = 0f;
+//                    int maxProbabilityIndex = -1;
+
+                    List<Category> resultProbability = new ArrayList<>();
+                    resultProbability.add(probability.get(0));  // the first food that have max score
+                    resultProbability.add(probability.get(1));  // the second food that have second score
+                    resultProbability.add(probability.get(2));  // the third food that have third score
+
+//                  find three result that have highest score
+
                     for (int i = 0; i < probability.size(); i++) {
                         float currentProbability = probability.get(i).getScore();
-                        if (currentProbability > maxProbability) {
-                            maxProbability = currentProbability;
-                            maxProbabilityIndex = i;
-                            maxProbabilityLabel = probability.get(i);
+                        if (currentProbability > resultProbability.get(0).getScore()) {
+                            resultProbability.set(2,resultProbability.get(1));
+                            resultProbability.set(1,resultProbability.get(0));
+                            resultProbability.set(0,probability.get(i));
+                        } else if (currentProbability > resultProbability.get(1).getScore()){
+                            resultProbability.set(2,resultProbability.get(1));
+                            resultProbability.set(1,probability.get(i));
+                        } else if (currentProbability > resultProbability.get(2).getScore()){
+                            resultProbability.set(2,probability.get(i));
                         }
                     }
-                    System.out.println("Highest: " + maxProbability);
-                    System.out.println("Index: " + maxProbabilityIndex);
-
-                    System.out.println("Labels: " + maxProbabilityLabel.getLabel());
-                    System.out.println("DisplayName: " + maxProbabilityLabel.getDisplayName());
-
-
-
-//                    String predictedClass = classes.get(predictedIndex);
-                    result.setText(maxProbabilityLabel.getLabel());
+//                    add list result into listView
+                    System.out.println(resultProbability);
+                    CustomApdapter customApdapter = new CustomApdapter(MainActivity.this, 0, resultProbability);
+                    listViewName.setAdapter(customApdapter);
 
                     // Releases model resources if no longer used.
                     model.close();
