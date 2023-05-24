@@ -8,17 +8,17 @@ import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.modeldownloader.CustomModel;
@@ -39,8 +39,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -60,13 +58,14 @@ public class MainActivity extends AppCompatActivity {
     List<String>  labels;
     List<String> classes = new ArrayList<>();
 
+    private Drawable selectedImage;
 
 
     MappedByteBuffer byteBufferModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test);
+        setContentView(R.layout.activity_main);
 
         selectBtn = findViewById(R.id.button_gallery);
         predictBtn = findViewById(R.id.button_identify);
@@ -367,6 +366,30 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+        List<Category> list = new ArrayList<>();
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1 , list);
+        listViewName.setAdapter(arrayAdapter);
+        listViewName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0) {
+                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
+                }
+                else if (position == 1){
+                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
+                }
+                else if (position == 2) {
+                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
+                }
+                else {
+
+                }
+            }
+            
+        });
+
 
     }
 
