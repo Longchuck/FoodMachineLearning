@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,6 +33,7 @@ import org.tensorflow.lite.support.label.Category;
 import org.tensorflow.lite.support.metadata.MetadataExtractor;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -369,23 +371,45 @@ public class MainActivity extends AppCompatActivity {
 
 
         List<Category> list = new ArrayList<>();
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1 , list);
+//        ArrayAdapter arrayAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1 , list);
+        CustomApdapter arrayAdapter = new CustomApdapter(getApplicationContext(),3,list);
         listViewName.setAdapter(arrayAdapter);
         listViewName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0) {
-                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
-                }
-                else if (position == 1){
-                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
-                }
-                else if (position == 2) {
-                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
-                }
-                else {
+                Category selectedCategory = (Category) parent.getItemAtPosition(position);
+                String foodName = selectedCategory.getLabel();
 
-                }
+
+
+                Intent intent = new Intent(MainActivity.this, InformationFoodActivity.class);
+                intent.putExtra("foodName", foodName);
+
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                intent.putExtra("foodImage", byteArray);
+
+                startActivity(intent);
+
+
+//                if(position == 0) {
+//                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
+//
+//                }
+//                else if (position == 1){
+//                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
+//
+//                }
+//                else if (position == 2) {
+//                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
+//
+//                }
+//                else {
+//
+//                }
+
             }
             
         });
@@ -465,6 +489,9 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                     imageView.setImageBitmap(bitmap);
+
+
+
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 } catch (IOException e) {

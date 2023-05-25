@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:textSize="24sp"
         android:text="Tên món"
+        android:textStyle="bold"
         android:gravity="center"
         android:paddingTop="16dp"
         android:paddingBottom="16dp" />
