@@ -380,11 +380,8 @@ public class MainActivity extends AppCompatActivity {
                 Category selectedCategory = (Category) parent.getItemAtPosition(position);
                 String foodName = selectedCategory.getLabel();
 
-
-
                 Intent intent = new Intent(MainActivity.this, InformationFoodActivity.class);
                 intent.putExtra("foodName", foodName);
-
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -392,24 +389,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("foodImage", byteArray);
 
                 startActivity(intent);
-
-
-//                if(position == 0) {
-//                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
-//
-//                }
-//                else if (position == 1){
-//                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
-//
-//                }
-//                else if (position == 2) {
-//                    startActivities(new Intent[]{new Intent(MainActivity.this, InformationFoodActivity.class)});
-//
-//                }
-//                else {
-//
-//                }
-
             }
             
         });
