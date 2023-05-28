@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,13 +20,28 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import hcmute.edu.vn.foodmachinelearning.Interface.SpoonacularAPI;
+import hcmute.edu.vn.foodmachinelearning.model.Recipe;
+import hcmute.edu.vn.foodmachinelearning.model.complexSearch;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class InformationFoodActivity extends AppCompatActivity implements FoodAdapter.OnItemClickListener{
 //    Button btnRecipe;
 //    TextView foodTextView;
 //    ImageView imageFood;
     RecyclerView recyclerView;
     FoodAdapter foodAdapter;
-    List<String> foodList;
+    List<Recipe> foodList;
+
+    ArrayList<Recipe> recipes ;
+
+    private LinearLayout linearListMonAn;
+    private View loadingView;
+    private SpoonacularAPI spoonacularAPI;
 
     @Override
     public void onItemClick(String foodNameTemp) {
@@ -40,26 +56,28 @@ public class InformationFoodActivity extends AppCompatActivity implements FoodAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.information_food);
 
+
         //get food name from activity_Main.layout when clicked.
         String foodName = getIntent().getStringExtra("foodName");
 
         recyclerView = findViewById(R.id.food_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //vi du tao mot danh sach thuc an de dua len recycle view
-        foodList = new ArrayList<>();
-        foodList.add("Pizza");
-        foodList.add("Burger");
-        foodList.add("Sushi");
-        foodList.add("Pasta");
-        foodList.add("Ice Cream");
-        foodList.add("Steak");
-        foodList.add("Tacos");
-        foodList.add("Curry");
-        foodList.add("Salad");
-        foodAdapter = new FoodAdapter(foodList, this);
-        recyclerView.setAdapter(foodAdapter);
+        linearListMonAn = findViewById(R.id.linearListRecipe);
+        loadingView = findViewById(R.id.layout_loading);
 
+        // Khởi tạo hàm gọi API
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.spoonacular.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        spoonacularAPI = retrofit.create(SpoonacularAPI.class);
+
+        showLoading();
+        recipes = new ArrayList<>();
+        callAPI(foodName);
+
+    }
 
 
 //        btnRecipe = findViewById(R.id.recipe_button);
@@ -93,7 +111,64 @@ public class InformationFoodActivity extends AppCompatActivity implements FoodAd
 //                startActivity(intent);
 //            }
 //        });
+
+    private void showMonAnList(List<Recipe> danhSachMonAn) {
+        foodList = new ArrayList<>();
+        foodList.addAll(danhSachMonAn);
+        System.out.println(foodList.size());
     }
 
+    private void showLoading() {
+        linearListMonAn.setVisibility(View.GONE);
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading() {
+        linearListMonAn.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(View.GONE);
+    }
+    public void callAPI(String query){
+        String apiKey = "b4573860b7ab4fda8e3530bc4c807030";
+        Call<complexSearch> call = spoonacularAPI.getRecipeInformation(apiKey, query);
+        call.enqueue(new Callback<complexSearch>() {
+            @Override
+            public void onResponse(Call<complexSearch> call, Response<complexSearch> response) {
+                if (response.isSuccessful()) {
+                    complexSearch recipe = response.body();
+                    recipes = recipe.getResult();
+
+
+                    if (recipes != null && !recipes.isEmpty()) {
+                        // Thực hiện các thao tác với danh sách recipe
+                        showMonAnList(recipes);
+                        hideLoading();
+
+                        // ...
+                    } else {
+
+                        System.out.println("Không lấy được thông tin");
+                        // Xử lý trường hợp danh sách rỗng
+                    }
+
+
+                    foodAdapter = new FoodAdapter( foodList,    InformationFoodActivity.this);
+                    recyclerView.setAdapter(foodAdapter);
+//                    Lấy thông tin món đầu tiên
+//                  Xử lý kết quả từ API tại đây
+//
+                }
+                else {
+                    // Xử lý lỗi từ API tại đây
+                    System.out.println(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<complexSearch> call, Throwable t) {
+                // Xử lý lỗi kết nối tại đây
+            }
+        });
+
+    }
 
 }

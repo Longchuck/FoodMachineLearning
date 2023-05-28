@@ -1,25 +1,33 @@
 package hcmute.edu.vn.foodmachinelearning;
 
 // FoodAdapter.java
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import hcmute.edu.vn.foodmachinelearning.model.Recipe;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
 
-    private List<String> foodList;
+    private List<Recipe> foodList;
     private OnItemClickListener itemClickListener;
 
     public interface OnItemClickListener {
         void onItemClick(String foodName);
     }
 
-    public FoodAdapter(List<String> foodList, OnItemClickListener itemClickListener) {
-        this.foodList = foodList;
+    public FoodAdapter(List<Recipe> foodList, OnItemClickListener itemClickListener) {
+        this.foodList=  foodList;
         this.itemClickListener = itemClickListener;
     }
 
@@ -27,15 +35,17 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     @Override
     public FoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.custom_food_list_item, parent, false);
+                .inflate(R.layout.item_list_recipe, parent, false);
         return new FoodViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
-        String foodName = foodList.get(position);
+        String foodName = foodList.get(position).getTitle();
+        String imageUrl = foodList.get(position).getImage();
+
         holder.textFoodName.setText(foodName);
-        holder.score.setText(foodName);
+        Picasso.get().load(imageUrl).into(holder.image);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,12 +65,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         public TextView textFoodName;
-        public TextView score;
+        public ImageView image;
 
         public FoodViewHolder(View itemView) {
             super(itemView);
-            textFoodName = itemView.findViewById(R.id.text_view_name);
-            score = itemView.findViewById(R.id.text_view_score);
+
+            textFoodName = itemView.findViewById(R.id.titleTextView);
+            image = itemView.findViewById(R.id.imageView);
         }
     }
 }

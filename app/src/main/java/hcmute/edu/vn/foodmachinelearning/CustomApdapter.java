@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import java.util.List;
 public class CustomApdapter extends ArrayAdapter<Category> {
     private Context context;
     private List<Category> categoryList;
+
+
 
 //    public CustomAdapter(Context context, int resource, ArrayList<Category> category) {
 //        super(context, 0, category);
