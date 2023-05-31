@@ -137,7 +137,6 @@ public class InformationFoodActivity extends AppCompatActivity implements FoodAd
                     complexSearch recipe = response.body();
                     recipes = recipe.getResult();
 
-
                     if (recipes != null && !recipes.isEmpty()) {
                         // Thực hiện các thao tác với danh sách recipe
                         showMonAnList(recipes);
@@ -149,7 +148,6 @@ public class InformationFoodActivity extends AppCompatActivity implements FoodAd
                         System.out.println("Không lấy được thông tin");
                         // Xử lý trường hợp danh sách rỗng
                     }
-
 
                     foodAdapter = new FoodAdapter( foodList,    InformationFoodActivity.this);
                     recyclerView.setAdapter(foodAdapter);
