@@ -44,11 +44,11 @@ public class InformationFoodActivity extends AppCompatActivity implements FoodAd
     private SpoonacularAPI spoonacularAPI;
 
     @Override
-    public void onItemClick(String foodNameTemp) {
+    public void onItemClick(int RecipeId) {
 
         Intent intent = new Intent(InformationFoodActivity.this, RecipeFoodActivity.class);
 
-        intent.putExtra("foodName", foodNameTemp);
+        intent.putExtra("id", RecipeId+"");
         startActivity(intent);
     }
     @Override
@@ -129,7 +129,7 @@ public class InformationFoodActivity extends AppCompatActivity implements FoodAd
     }
     public void callAPI(String query){
         String apiKey = "b4573860b7ab4fda8e3530bc4c807030";
-        Call<complexSearch> call = spoonacularAPI.getRecipeInformation(apiKey, query);
+        Call<complexSearch> call = spoonacularAPI.getRecipeSearch(apiKey, query);
         call.enqueue(new Callback<complexSearch>() {
             @Override
             public void onResponse(Call<complexSearch> call, Response<complexSearch> response) {

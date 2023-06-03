@@ -2,7 +2,7 @@ package hcmute.edu.vn.foodmachinelearning.model;
 
 import java.util.ArrayList;
 
-public class Root {
+public class RecipeInformation {
     public int id;
     public String title;
     public String image;

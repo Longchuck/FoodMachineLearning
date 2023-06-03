@@ -23,7 +23,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     private OnItemClickListener itemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(String foodName);
+        void onItemClick(int RecipeId);
     }
 
     public FoodAdapter(List<Recipe> foodList, OnItemClickListener itemClickListener) {
@@ -43,6 +43,10 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
         String foodName = foodList.get(position).getTitle();
         String imageUrl = foodList.get(position).getImage();
+        int RecipeId = foodList.get(position).getId();
+
+        System.out.println(RecipeId);
+
 
         holder.textFoodName.setText(foodName);
         Picasso.get().load(imageUrl).into(holder.image);
@@ -51,7 +55,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             @Override
             public void onClick(View v) {
                 if (itemClickListener != null) {
-                    itemClickListener.onItemClick(foodName);
+                    itemClickListener.onItemClick(RecipeId);
                 }
             }
         });
