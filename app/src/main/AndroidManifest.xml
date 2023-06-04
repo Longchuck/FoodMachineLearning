@@ -25,7 +25,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".InstructionFoodActivity"
+            android:exported="false" />
         <activity
             android:name=".InformationFoodActivity"
             android:exported="false" />

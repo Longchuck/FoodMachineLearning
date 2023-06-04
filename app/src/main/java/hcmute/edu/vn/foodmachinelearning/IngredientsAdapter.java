@@ -61,7 +61,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
        holder.txtOrginal.setText(listIngredients.get(position).getOriginal());
 
 
-        String imgUrl = "https://spoonacular.com/cdn/ingredients_100x100/"+listIngredients.get(position).getImage();
+       String imgUrl = "https://spoonacular.com/cdn/ingredients_100x100/"+listIngredients.get(position).getImage();
        Picasso.get().load(imgUrl).into(holder.imageIngredient);
 
        Measures measures = listIngredients.get(position).getMeasures();

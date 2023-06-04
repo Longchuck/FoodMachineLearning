@@ -1,5 +1,9 @@
 package hcmute.edu.vn.foodmachinelearning.Interface;
 
+import java.util.List;
+
+import hcmute.edu.vn.foodmachinelearning.model.Instructions;
+import hcmute.edu.vn.foodmachinelearning.model.InstructionsResponse;
 import hcmute.edu.vn.foodmachinelearning.model.RecipeInformation;
 import hcmute.edu.vn.foodmachinelearning.model.complexSearch;
 import retrofit2.Call;
@@ -21,4 +25,12 @@ public interface SpoonacularAPI {
         @Query("apiKey") String apiKey
 //        @Query("query") String query
     );
+
+    @GET("recipes/{id}/analyzedInstructions")
+    Call<List<Instructions>> getInstructions(
+            @Path("id") int recipeId,
+            @Query("apiKey") String apiKey
+//        @Query("query") String query
+    );
+
 }
